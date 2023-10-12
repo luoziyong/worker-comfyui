@@ -1,11 +1,3 @@
-# Download the models
-FROM alpine/git:2.36.2 as download
-
-RUN apk add --no-cache wget && \
-    wget -q -O /sd_xl_base_1.0.safetensors https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_base_1.0.safetensors && \
-    wget -q -O /sd_xl_refiner_1.0.safetensors https://huggingface.co/stabilityai/stable-diffusion-xl-refiner-1.0/resolve/main/sd_xl_refiner_1.0.safetensors && \
-    wget -q -O /sdxl_vae.safetensors https://huggingface.co/madebyollin/sdxl-vae-fp16-fix/resolve/main/sdxl_vae.safetensors
-
 # Base image
 FROM python:3.10.9-slim
 
@@ -48,6 +40,14 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 RUN cd ComfyUI/custom_nodes && \
     git clone https://github.com/ltdrdata/ComfyUI-Manager.git
 
+# Copy ComfyUI Extra Model Paths (to share models with A1111)
+COPY comfyui/extra_model_paths.yaml /ComfyUI/
+
+# Download the models
+RUN wget -q -O /sd_xl_base_1.0.safetensors https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_base_1.0.safetensors && \
+    wget -q -O /sd_xl_refiner_1.0.safetensors https://huggingface.co/stabilityai/stable-diffusion-xl-refiner-1.0/resolve/main/sd_xl_refiner_1.0.safetensors && \
+    wget -q -O /sdxl_vae.safetensors https://huggingface.co/madebyollin/sdxl-vae-fp16-fix/resolve/main/sdxl_vae.safetensors
+
 RUN mkdir /sd-models
 COPY --from=download /sd_xl_base_1.0.safetensors /sd-models/sd_xl_base_1.0.safetensors
 COPY --from=download /sd_xl_refiner_1.0.safetensors /sd-models/sd_xl_refiner_1.0.safetensors
@@ -56,6 +56,6 @@ COPY --from=download /sdxl_vae.safetensors /sd-models/sdxl_vae.safetensors
 # Add src files (Worker Template)
 ADD src .
 
-# Set permissions and specify the command to run
-RUN chmod +x /start.sh
-CMD /start.sh
+# Start the container
+SHELL ["/bin/bash", "--login", "-c"]
+CMD [ "/start.sh" ]
