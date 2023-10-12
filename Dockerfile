@@ -44,14 +44,10 @@ RUN cd ComfyUI/custom_nodes && \
 COPY comfyui/extra_model_paths.yaml /ComfyUI/
 
 # Download the models
-RUN wget -q -O /sd_xl_base_1.0.safetensors https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_base_1.0.safetensors && \
-    wget -q -O /sd_xl_refiner_1.0.safetensors https://huggingface.co/stabilityai/stable-diffusion-xl-refiner-1.0/resolve/main/sd_xl_refiner_1.0.safetensors && \
-    wget -q -O /sdxl_vae.safetensors https://huggingface.co/madebyollin/sdxl-vae-fp16-fix/resolve/main/sdxl_vae.safetensors
-
 RUN mkdir /sd-models
-COPY --from=download /sd_xl_base_1.0.safetensors /sd-models/sd_xl_base_1.0.safetensors
-COPY --from=download /sd_xl_refiner_1.0.safetensors /sd-models/sd_xl_refiner_1.0.safetensors
-COPY --from=download /sdxl_vae.safetensors /sd-models/sdxl_vae.safetensors
+RUN wget -q -O /sd-models/sd_xl_base_1.0.safetensors https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_base_1.0.safetensors && \
+    wget -q -O /sd-models/sd_xl_refiner_1.0.safetensors https://huggingface.co/stabilityai/stable-diffusion-xl-refiner-1.0/resolve/main/sd_xl_refiner_1.0.safetensors && \
+    wget -q -O /sd-models/sdxl_vae.safetensors https://huggingface.co/madebyollin/sdxl-vae-fp16-fix/resolve/main/sdxl_vae.safetensors
 
 # Add src files (Worker Template)
 ADD src .
