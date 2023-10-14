@@ -3,3 +3,4 @@
 
 runpod==1.2.6
 websocket-client==1.6.4
+oss2==2.18.2

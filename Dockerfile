@@ -27,7 +27,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 
 # Install PyTorch
 RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+    pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118 --no-cache-dir
 
 # Install ComfyUI
 RUN --mount=type=cache,target=/root/.cache/pip \
